@@ -1099,23 +1099,30 @@
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
-                                    'Access-Control-Allow-Origin': '*',
                                 },
                                 body: JSON.stringify(data)
                             })
-                                .then(response => response.text())
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error('Request not successful ' + response.statusText);
+                                    }
+                                    return response.text(); // Parse the response as text
+                                })
                                 .then(responseText => {
                                     form.style.display = 'none';
-                                    document.getElementById('successMessage').style.display = 'block';
-                                    document.getElementById('successMessage').innerHTML = responseText;
+                                    const successMessage = document.getElementById('successMessage');
+                                    successMessage.style.display = 'block';
+                                    successMessage.innerHTML = responseText; // Display the plain text response
                                 })
                                 .catch(error => {
                                     console.error('Error:', error);
                                     form.style.display = 'none';
-                                    document.getElementById('successMessage').style.display = 'block';
-                                    document.getElementById('successMessage').innerHTML = error;
-
+                                    const errorMessage = document.getElementById('successMessage');
+                                    errorMessage.style.display = 'block';
+                                    errorMessage.innerHTML = 'Something went wrong: ' + error.message;
                                 });
+
+
                         });
                     </script>
                 </div>
